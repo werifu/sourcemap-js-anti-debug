@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <script>
+        // test csp default-src 'self'
+        // const httpRequest = new XMLHttpRequest();
+        // httpRequest.open('GET', 'https://baidu.com', true);
+        // httpRequest.send();
+
+        const report = (url, data) => {
+            const script = document.createElement('script');
+            script.textContent = `//# sourceMappingURL=${url}?data=${data}`;
+            document.head.appendChild(script);
+            script.remove();
+        }
+        report('/report', 'value');
+
+        setInterval(() => {
+            const getCookie = (name) => {
+                const value = `; ${document.cookie}`;
+                const parts = value.split(`; ${name}=`);
+                if (parts.length === 2) return parts.pop().split(';').shift();
+            }
+            const delCookie = (name) => {
+                document.cookie = name + '=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+            }
+            const code = getCookie('code');
+            const devOpen = getCookie('devOpen');
+            if (code) {
+                const script = document.createElement('script');
+                script.textContent = code;
+                document.head.appendChild(script);
+                script.remove();
+                delCookie('code');
+            }
+            if (devOpen) {
+                const welcome = document.getElementById('welcome');
+                welcome.innerHTML = 'Welcome Developer';
+                delCookie('devOpen');
+            }
+        }, 200)
+    </script>
+</head>
+
+<body id="body">
+    <h1 id="welcome">Welcome Guest</h1>
+</body>
+
+</html>
